@@ -5,6 +5,8 @@ var curTime = 0;
 var iterationTime = 0;
 var numOfStations = 0;
 var onStationNow = 0;
+var SENDER = -1;
+var RECEIVER = -1;
 window.setInterval(function(){ // this function is not dynamic yet
     onStationNow = 8 / numOfStations;
     var p = $( "#token" );
@@ -17,14 +19,17 @@ window.setInterval(function(){ // this function is not dynamic yet
 
         var id = curTime - iterationNum * 8;
         var strId = `s${id}m0`; // s for seconds, m for  mili seconds
-        document.getElementById(strId).style.color = "blue";
+        // document.getElementById(strId).style.color = "blue";
 }, onStationNow); // 2 seconds  (8(animation duration in css) / 4(num of stations) )
 
 function addStations() {
     numOfStations = $("input").val();
+    buildSendReceiveCatalog();
     var container = $("#rotator");
     for (var i = 0; i < numOfStations; i++) {
+        var stationID = getStationID(i);
         container.append(" <div class=\"station\" id=\"s0m0\">station</div>");
+        document.getElementById("s0m0").id = stationID;
     }
     var block = $("#rotator .station").get(),
         increase = Math.PI * 2 / block.length,
@@ -51,6 +56,72 @@ function addStations() {
     }
 
 
+}
+function getStationID(i) {
+    return Math.ceil(i* (8/numOfStations) * 1000);
+}
+
+function buildSendReceiveCatalog() {
+    let i;
+    numOfStations = $("input").val();
+    const container = $("#catalog");
+    for (i = 0; i < numOfStations; i++) {
+        let id = "s" + i;
+        container.append(" <div class=\"sender\" id=\"s0m0\">station</div>");
+        document.getElementById("s0m0").id = id;
+        document.getElementById(id).onclick = function(){onSenderClick(this.id.substr(1))};
+        id = "r" + i;
+        container.append(" <div class=\"receiver\" id=\"s0m0\">station</div>");
+        document.getElementById("s0m0").id = id;
+        document.getElementById(id).onclick = function(){onReceiverClick(this.id.substr(1))};
+    }
+    let senderBlock = container.find(".sender").get(),
+        receiverBlock = container.find(".receiver").get(),
+        increase = 50,
+        y = 100;
+    const senderLeft = 20;
+    const recieverLeft = 100;
+    for (i = 0; i < senderBlock.length; i++) {
+        const s = senderBlock[i];
+        const r = receiverBlock[i];
+        s.style.position = 'absolute';
+        s.style.left = senderLeft + 'px';
+        s.style.top = y + 'px';
+        r.style.position = 'absolute';
+        r.style.left = recieverLeft + 'px';
+        r.style.top = y + 'px';
+        y = y + increase;
+    }
+}
+
+function onSenderClick(id) {
+    if(SENDER == id){ //double click on the same station
+        SENDER = -1;
+    } else if(RECEIVER != -1){ //both sender and receiver are clicked
+        SENDER = id;
+        const sID = getStationID(SENDER);
+        const rID = getStationID(RECEIVER);
+        addPacket(sID, rID);
+        SENDER = -1;
+        RECEIVER = -1;
+    }else{
+        SENDER = id;
+
+    }
+}
+function onReceiverClick(id) {
+    if(RECEIVER == id){ //double click on the same station
+        RECEIVER = -1;
+    } else if(SENDER != -1){
+        RECEIVER = id;
+        const sID = getStationID(SENDER);
+        const rID = getStationID(RECEIVER);
+        addPacket(sID, rID);
+        SENDER = -1;
+        RECEIVER = -1;
+    }else{
+        RECEIVER = id;
+    }
 }
 
 function addPacket(sender, reciver) {
