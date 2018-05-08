@@ -1,27 +1,27 @@
-
+var packetQueue = [];
+var isSending = false;
 var iterationNum = 0;
 var curTime = 0;
 var iterationTime = 0;
-// window.setInterval(function(){ // this function is not dynamic yet
-//     var p = $( "#token" );
-//     var offset = p.offset();
-//     console.log(offset.left + "   " + offset.top  + "touched object");
-//     curTime += 2;
-//     iterationTime += 2;
-//     if (iterationTime == 8) {
-//         iterationTime = 0;
-//         iterationNum++;
-//     }
-//
-//     if (iterationNum == 1) { // itration 3
-//         var id = curTime - iterationNum * 8;
-//         var strId = `s${id}m0`; // s for seconds, m for  mili seconds
-//         document.getElementById(strId).style.color = "blue";
-//     }
-// }, 2000); // 2 seconds  (8(animation duration in css) / 4(num of stations) )
+var numOfStations = 0;
+var onStationNow = 0;
+window.setInterval(function(){ // this function is not dynamic yet
+    onStationNow = 8 / numOfStations;
+    var p = $( "#token" );
+    curTime += 2;
+    iterationTime += 2;
+    if (iterationTime == 8) {
+        iterationTime = 0;
+        iterationNum++;
+    }
+
+        var id = curTime - iterationNum * 8;
+        var strId = `s${id}m0`; // s for seconds, m for  mili seconds
+        document.getElementById(strId).style.color = "blue";
+}, onStationNow); // 2 seconds  (8(animation duration in css) / 4(num of stations) )
 
 function addStations() {
-    var numOfStations = $("input").val();
+    numOfStations = $("input").val();
     var container = $("#rotator");
     for (var i = 0; i < numOfStations; i++) {
         container.append(" <div class=\"station\" id=\"s0m0\">station</div>");
@@ -50,4 +50,46 @@ function addStations() {
         angle += increase;
     }
 
+
 }
+
+function addPacket(sender, reciver) {
+    //listen to stations
+    packetQueue.push([sender, reciver]);
+    printQueue();
+}
+
+function fces(curStation) {
+    if (typeof packetQueue !== 'undefined' && packetQueue.length > 0) {
+        curSender = packetQueue[0][0];
+        curReciever = packetQueue[0][1];
+        if (curStation == curSender) {
+            toggleSender(curStation);
+            if (isSending == true) {
+                isSending = false;
+                packetQueue.shift();
+                printQueue();
+            } else {
+                isSending = true;
+                toggleReciever(curReciever);
+            }
+        } else if (curStation == curReciever) {
+            toggleReciever(curStation);
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
