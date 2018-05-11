@@ -63,6 +63,20 @@
     transition: all ease-in-out 1s;
 }
 
+
+.sender:hover{
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    transition: all ease-in-out 0.25s;
+}
+.receiver:hover{
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    transition: all ease-in-out 0.25s;
+}
+
 .sender, .receiver {
         border: none;
     border-radius: 100%;
@@ -72,15 +86,15 @@
     width: 40px;
     height: 40px;
     color: #fff;
+    transition: all ease-in-out 0.25s;
 }
 
 #circle{
-    border: 8px solid #a9dadf;
+    border: 8px solid rgb(95, 95, 98);;
     border-radius: 50%;
     background-color: rgba(230,230,230,0.3);
     /* opacity: 0.3; */
     position: absolute;
-    box-shadow: 1px 0px 10px 1px black inset;
 
 }
 .outer {
@@ -97,6 +111,7 @@
 
 body{
     background-image: url("../images/Network-Background-PP-test.png");
+    background-size: 60%;
 }
 
 .number{
@@ -106,4 +121,32 @@ body{
     margin-left: 435px;
     color: #656568;
     margin-top: 7px;
+}
+
+.add{
+    height: 50px;
+    border-radius: 50%;
+    background-color: lightgray;
+    /* size: 60px; */
+    font-size: 25px;
+    width: 50px;
+    border: none;
+    color: rgb(123,123,126);
+    box-shadow: 0 0 5px 0 black;
+
+}
+.add:hover{
+    background-color: #54c5d1;
+}
+
+input{
+    border: 2px solid lightgray;
+    border-radius: 40px;
+    height: 40px;
+    width: 145px;
+    padding: 0 11px;
+    font-size: 17px;
+    align-items: center;
+    overflow: hidden;
+    color: darkgrey;
 }
