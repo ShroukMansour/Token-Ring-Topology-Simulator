@@ -12,8 +12,8 @@ function interval(){ // this function is not dynamic yet
         onStationNow = 8 / numOfStations;
         var p = $( "#token" );
         curTime += onStationNow;
-        iterationTime += onStationNow;
-        if (iterationTime >= 8) {
+        iterationTime += 1;
+        if (iterationTime >= numOfStations) {
             iterationTime = 0;
             iterationNum++;
         }
@@ -42,34 +42,42 @@ function addStations() {
     for (var i = 0; i < numOfStations; i++) {
         var stationID = getStationID(i);
         container.append(` <div class=\"station\" id=pc${stationID} ><img src=\"images/station.png\" style = \"width:50px;height:60px\"></div>`);
+        container.append(` <div class=\"number\" ></div>`);
      //  document.getElementById(stationID).style.backgroundImage = "url('images/station.png')"
     }
     var block = $("#rotator .station").get(),
         increase = Math.PI * 2 / block.length,
         x = 0, y = 0, angle = 0;
+    let numberBlock = $("#rotator .number");
 
     const container2 = $("#circle");
 
     $('#keyframes').text(` @-webkit-keyframes orbit { 
-                           from {  transform: rotate(0deg) translateX(${radius - 28}px) rotate(0deg); }
-                           to   {  transform: rotate(360deg) translateX(${radius - 28}px) rotate(-360deg); }
+                           from {  transform: rotate(0deg) translateX(${radius - 27}px) rotate(95deg); }
+                           to   {  transform: rotate(360deg) translateX(${radius - 27}px) rotate(95deg); }
                        }`);
     const top = $(window).scrollTop() + Math.floor($(window).height() / 2);
-    container2.append("<div id = \"token\">Token</div>");
+    container2.append("<div id = \"token\" class = \"empty\" >Token</div>");
     let h = container2.height();
     h = h/2;
     const t = document.getElementById("circle").style.top;
-    document.getElementById("token").style.top =  h - 5 + t;
+    document.getElementById("token").style.top =  h - 38 + t;
 
 
     for (var i = 0; i < block.length; i++) {
 
         var elem = block[i];
-        x = radius * Math.cos(angle) + radius;
+        var text = numberBlock[i];
+        x = Math.ceil(radius * Math.cos(angle) + radius);
         y = radius * Math.sin(angle) + top;
         elem.style.position = 'absolute';
         elem.style.left = x + 'px';
         elem.style.top = y + 'px';
+        x = Math.ceil((radius+40) * Math.cos(angle) + (radius+40));
+        y = (radius+40) * Math.sin(angle) + top;
+        text.style.left = x + 'px';
+        text.style.top = y + 'px';
+        text.innerHTML = i + 1;
         var rot = 90 + (i * (360 / block.length));
         elem.style.transform = 'rotate('+rot+'deg)';
         angle += increase;
@@ -177,14 +185,15 @@ function fces(curStation) {
 
             if (isSending == true) {
                 isSending = false;
-                changestyle(packetQueue[0][0], packetQueue[0][1]); // here change style of sender andreceiver
+                //changestyle(packetQueue[0][0], packetQueue[0][1]); // here change style of sender andreceiver
                 packetQueue.shift();
-                document.getElementById('token').innerHTML = "token";
+                document.getElementById('token').className = "empty";
+                //document.getElementById('token').innerHTML = "token";
 
                 //printQueue();
             } else {
                 isSending = true;
-                document.getElementById('token').innerHTML = "frame";
+                document.getElementById('token').className = "full";
                 var recBtn = $(`#${curReciever}`);
                 recBtn.addClass("pulse animated");
                 //toggleReciever(curReciever);
