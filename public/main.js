@@ -42,7 +42,7 @@ function addStations() {
     for (var i = 0; i < numOfStations; i++) {
         var stationID = getStationID(i);
         container.append(` <div class=\"station\" id=pc${stationID} ><img src=\"images/station.png\" style = \"width:50px;height:60px\"></div>`);
-        container.append(` <div class=\"number\" ></div>`);
+        container.append(` <div class=\"number\" id=n${stationID}></div>`);
      //  document.getElementById(stationID).style.backgroundImage = "url('images/station.png')"
     }
     var block = $("#rotator .station").get(),
@@ -154,6 +154,12 @@ function onReceiverClick(id) {
 function addPacket(sender, reciver) {
     //listen to stations
     packetQueue.push([sender, reciver]);
+    var sen = packetQueue[0][0].substr(2);
+    var rec = packetQueue[0][1].substr(2);
+    document.getElementById("n" +sen).style.color = "red";
+    document.getElementById("n" +rec).style.color = "red";
+
+
   //  printQueue();
 }
 function changestyle(sendID, receiverID){ /// functon change style of sender and receiver 
@@ -186,9 +192,19 @@ function fces(curStation) {
             if (isSending == true) {
                 isSending = false;
                 //changestyle(packetQueue[0][0], packetQueue[0][1]); // here change style of sender andreceiver
+                var sen = packetQueue[0][0].substr(2);
+                var rec = packetQueue[0][1].substr(2);
+                document.getElementById("n" +sen).style.color = "#656568";
+                document.getElementById("n" +rec).style.color = "#656568";
                 packetQueue.shift();
                 document.getElementById('token').className = "empty";
-                //document.getElementById('token').innerHTML = "token";
+                if(packetQueue.length > 0) {
+                    var sen = packetQueue[0][0].substr(2);
+                    var rec = packetQueue[0][1].substr(2);
+                    document.getElementById("n" + sen).style.color = "red";
+                    document.getElementById("n" + rec).style.color = "red";
+                    //document.getElementById('token').innerHTML = "token";
+                }
 
                 //printQueue();
             } else {
@@ -196,12 +212,19 @@ function fces(curStation) {
                 document.getElementById('token').className = "full";
                 var recBtn = $(`#${curReciever}`);
                 recBtn.addClass("pulse animated");
+
+
                 //toggleReciever(curReciever);
                 //document.getElementById('token').style.backgroundColor = "yellow";
+              
+
+
             }
         } else if (curStation == curReciever && isSending) {
             //  toggleReciever(curStation);
             document.getElementById('token').innerHTML = "received";
+            $(".audioPlayer")[0].play();
+
             // document.getElementById('token').style.color = "green";
         }
     }
